@@ -3,9 +3,8 @@
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  // State to store the remaining time
-  const [timeLeft, setTimeLeft] = useState(0); // Time left in seconds
-  const [showClock, setShowClock] = useState(false); // State to toggle clock visibility
+  const [timeLeft, setTimeLeft] = useState(0); // Initialize as 0, not null
+  const [showClock, setShowClock] = useState(false);
 
   useEffect(() => {
     if (showClock) {
@@ -15,24 +14,24 @@ export default function Home() {
       target.setDate(now.getDate() + 1);
       target.setHours(15, 0, 0, 0); // 3:00 PM
 
-      const updateTimer = () => {
+      const calculateTimeLeft = () => {
         const currentTime = new Date();
-        const timeDifference = target.getTime() - currentTime.getTime(); // Difference in milliseconds
-        setTimeLeft(Math.max(0, Math.floor(timeDifference / 1000))); // Convert to seconds
+        return Math.max(0, Math.floor((target.getTime() - currentTime.getTime()) / 1000)); // Seconds left
       };
 
-      updateTimer(); // Initial calculation
+      // Set the initial time left after component mounts
+      setTimeLeft(calculateTimeLeft());
 
       const timer = setInterval(() => {
-        updateTimer();
+        setTimeLeft(calculateTimeLeft());
       }, 1000);
 
       return () => clearInterval(timer); // Cleanup interval on component unmount
     }
   }, [showClock]);
 
-  // Function to format time
   const formatTime = (seconds: number) => {
+    if (seconds === 0) return "Loading..."; // Handle initial zero state
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
@@ -44,13 +43,13 @@ export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 bg-black text-white font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center">
-        <h1 className="text-4xl font-bold">Countdown Timer</h1>
+        <h1 className="text-4xl font-bold">Wondering when you can see me?</h1>
         {!showClock ? (
           <button
             onClick={() => setShowClock(true)}
             className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
           >
-            Show Timer
+            Find out!
           </button>
         ) : (
           <div className="text-6xl font-mono">{formatTime(timeLeft)}</div>
