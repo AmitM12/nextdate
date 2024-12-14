@@ -11,7 +11,7 @@ export default function Home() {
       // Calculate the target time (3 PM tomorrow)
       const now = new Date();
       const target = new Date();
-      target.setDate(now.getDate() + 1);
+      target.setDate(now.getDate());
       target.setHours(15, 0, 0, 0); // 3:00 PM
 
       const calculateTimeLeft = () => {
